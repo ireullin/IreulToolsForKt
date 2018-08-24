@@ -4,6 +4,5 @@ out/
 .gradle/
 gradle/
 log/
-gradlew*
 *.iml
 *.gz
