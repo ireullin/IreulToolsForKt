@@ -2,7 +2,6 @@ build/
 out/
 .idea/
 .gradle/
-gradle/
 log/
 *.iml
 *.gz
