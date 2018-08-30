@@ -80,31 +80,6 @@ class MutableDatetime : Datetime {
         return this
     }
 
-    override fun addOrSubDay(v: Int): Datetime {
-        this.immutableDatetime = this.immutableDatetime!!.addOrSubDay(v)
-        return this
-    }
-
-    override fun addOrSubHour(v: Int): Datetime {
-        this.immutableDatetime = this.immutableDatetime!!.addOrSubHour(v)
-        return this
-    }
-
-    override fun addOrSubMin(v: Int): Datetime {
-        this.immutableDatetime = this.immutableDatetime!!.addOrSubMin(v)
-        return this
-    }
-
-    override fun addOrSubSec(v: Int): Datetime {
-        this.immutableDatetime = this.immutableDatetime!!.addOrSubSec(v)
-        return this
-    }
-
-    override fun addOrSubMillis(v: Long): Datetime {
-        this.immutableDatetime = this.immutableDatetime!!.addOrSubMillis(v)
-        return this
-    }
-
     override fun reset(dt: ReadOnlyDatetime): Datetime {
         this.immutableDatetime = ImmutableDatetime.of(dt.stamp(), dt.getTimeZone())
         return this
@@ -141,12 +116,9 @@ class MutableDatetime : Datetime {
 
     override fun minus(dt: ReadOnlyDatetime) = this.immutableDatetime!!.minus(dt)
 
-//    override fun to(dt: ReadOnlyDatetime): Duration {
-//        return this.immutableDatetime!!.to(dt)
-//    }
-//    override fun from(dt: ReadOnlyDatetime): Duration {
-//        return this.immutableDatetime!!.from(dt)
-//    }
+    override fun minus(interval: Interval): Datetime = this.immutableDatetime!!.minus(interval)
+
+    override fun plus(interval: Interval): Datetime = this.immutableDatetime.plus(interval)
 
     override fun year(): Int {
         return this.immutableDatetime!!.year()

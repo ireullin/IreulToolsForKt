@@ -6,11 +6,12 @@ import java.util.*
 fun now() = ImmutableDatetime.now()
 
 class ImmutableDatetime : Datetime {
+
     private val calendar = GregorianCalendar()
 
     override fun getTimeZone(): TimeZone = calendar.timeZone
 
-    private constructor() {}
+    private constructor()
 
     private constructor(tz: TimeZone) {
         calendar.timeZone = tz
@@ -125,35 +126,6 @@ class ImmutableDatetime : Datetime {
         return ImmutableDatetime(year(), month(), day(), 23, 59, 59, 999, getTimeZone())
     }
 
-    override fun addOrSubDay(v: Int): Datetime {
-        val dt = ImmutableDatetime(this.stamp(), getTimeZone())
-        dt.calendar.add(Calendar.DATE, v)
-        return dt
-    }
-
-    override fun addOrSubHour(v: Int): Datetime {
-        val dt = ImmutableDatetime(this.stamp(), getTimeZone())
-        dt.calendar.add(Calendar.HOUR, v)
-        return dt
-    }
-
-    override fun addOrSubMin(v: Int): Datetime {
-        val dt = ImmutableDatetime(this.stamp(), getTimeZone())
-        dt.calendar.add(Calendar.MINUTE, v)
-        return dt
-    }
-
-    override fun addOrSubSec(v: Int): Datetime {
-        val dt = ImmutableDatetime(this.stamp(), getTimeZone())
-        dt.calendar.add(Calendar.SECOND, v)
-        return dt
-    }
-
-    override fun addOrSubMillis(v: Long): Datetime {
-        val dt = ImmutableDatetime(this.stamp(), getTimeZone())
-        dt.calendar.add(Calendar.MILLISECOND, v.toInt())
-        return dt
-    }
 
     override fun toString(format: String): String {
         val sdf = SimpleDateFormat(format)
@@ -177,12 +149,29 @@ class ImmutableDatetime : Datetime {
 
     override fun minus(dt: ReadOnlyDatetime) = DurationImp(this.stamp()-dt.stamp())
 
-//    override fun to(dt: ReadOnlyDatetime): Duration {
-//        return DurationImp(dt.stamp() - this.stamp())
-//    }
-//    override fun from(dt: ReadOnlyDatetime): Duration {
-//        return DurationImp(this.stamp() - dt.stamp())
-//    }
+    override fun minus(interval: Interval): Datetime{
+        val dt = ImmutableDatetime(this.stamp(), getTimeZone())
+        when(interval){
+            is Days -> dt.calendar.add(Calendar.DATE, -interval.v)
+            is Hours -> dt.calendar.add(Calendar.HOUR, -interval.v)
+            is Mins -> dt.calendar.add(Calendar.MINUTE, -interval.v)
+            is Secs -> dt.calendar.add(Calendar.SECOND, -interval.v)
+            is Millis -> dt.calendar.add(Calendar.MILLISECOND, -interval.v)
+        }
+        return dt
+    }
+
+    override fun plus(interval: Interval): Datetime{
+        val dt = ImmutableDatetime(this.stamp(), getTimeZone())
+        when(interval){
+            is Days -> dt.calendar.add(Calendar.DATE, interval.v)
+            is Hours -> dt.calendar.add(Calendar.HOUR, interval.v)
+            is Mins -> dt.calendar.add(Calendar.MINUTE, interval.v)
+            is Secs -> dt.calendar.add(Calendar.SECOND, interval.v)
+            is Millis -> dt.calendar.add(Calendar.MILLISECOND, interval.v)
+        }
+        return dt
+    }
 
     override fun toTimeZone(tz: TimeZone): Datetime {
         return ImmutableDatetime(stamp(), tz)

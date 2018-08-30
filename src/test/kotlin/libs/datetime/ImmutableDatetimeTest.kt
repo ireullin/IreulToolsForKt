@@ -1,6 +1,7 @@
 package libs.datetime
 
 import junit.framework.TestCase
+import libs.json.Json
 import org.junit.Test
 import org.slf4j.LoggerFactory
 
@@ -9,10 +10,16 @@ class ImmutableDatetimeTest:TestCase(){
     var log = LoggerFactory.getLogger(ImmutableDatetimeTest::class.java)
 
     @Test
+    fun testSerial() {
+        val dt = ImmutableDatetime.of(1980,8,4,13,12,10, 0)
+        log.info(Json.stringify(dt))
+    }
+
+    @Test
     fun testAddorSub() {
         try {
             val pre = ImmutableDatetime.of(2016, 5, 4, 23, 30, 59, 0)
-            val cur = pre.addOrSubDay(90)
+            val cur = pre + 90.days()
             log.info(cur.toString())
             assertEquals("2016-08-02 23:30:59", cur.toString("yyyy-MM-dd HH:mm:ss"))
         } catch (e: Exception) {
@@ -23,7 +30,7 @@ class ImmutableDatetimeTest:TestCase(){
 
         try {
             val pre = ImmutableDatetime.of(2016, 5, 4, 23, 30, 59, 0)
-            val cur = pre.addOrSubMillis(48 * 60 * 60 * 1000)
+            val cur = pre + (48 * 60 * 60 * 1000).millis()
             log.info(cur.toString())
             assertEquals("2016-05-06 23:30:59", cur.toString("yyyy-MM-dd HH:mm:ss"))
         } catch (e: Exception) {
@@ -35,7 +42,7 @@ class ImmutableDatetimeTest:TestCase(){
         // 閏年
         try {
             val pre = ImmutableDatetime.of(2016, 2, 27, 23, 30, 59, 0)
-            val cur = pre.addOrSubDay(2)
+            val cur = pre + 2.days()
             log.info(cur.toString())
             assertEquals("2016-02-29 23:30:59", cur.toString("yyyy-MM-dd HH:mm:ss"))
         } catch (e: Exception) {
@@ -47,7 +54,7 @@ class ImmutableDatetimeTest:TestCase(){
         // 沒閏年
         try {
             val pre = ImmutableDatetime.of(2015, 2, 27, 23, 30, 59, 0)
-            val cur = pre.addOrSubDay(2)
+            val cur = pre + 2.days()
             log.info(cur.toString())
             assertEquals("2015-03-01 23:30:59", cur.toString("yyyy-MM-dd HH:mm:ss"))
         } catch (e: Exception) {
@@ -171,13 +178,8 @@ class ImmutableDatetimeTest:TestCase(){
         log.info("==============================")
 
         try {
-            val dt6 = ImmutableDatetime.readFrom("2010-03-01 10:00:00", "yyyy-MM-dd HH:mm:ss").peek { dt -> log.info("Started at" + dt.toString()) }
-                    .addOrSubDay(-3).peek({ dt -> log.info("sub {} days is {}", 3, dt.toString()) })
-                    .addOrSubHour(73).peek({ dt -> log.info("add {} hours is {}", 73, dt.toString()) })
-                    .addOrSubMin(-120).peek({ dt -> log.info("sub {} minutes is {}", 120, dt.toString()) })
-                    .addOrSubSec(5).peek({ dt -> log.info("add {} second is {}", 5, dt.toString()) })
-                    .addOrSubMillis(1500).peek({ dt -> log.info("add {} millisecond is {}", 1500, dt.toString()) })
-
+            val read = ImmutableDatetime.readFrom("2010-03-01 10:00:00", "yyyy-MM-dd HH:mm:ss")
+            val dt6 = read - 3.days() + 73.hours() - 120.mins() + 5.secs() + 1500.millis()
             log.info(dt6.toString())
             assertEquals("2010-03-01 09:00:06.500", dt6.toString())
         } catch (e: Exception) {
@@ -187,12 +189,7 @@ class ImmutableDatetimeTest:TestCase(){
         log.info("==============================")
 
         val dtA = ImmutableDatetime.now()
-        val dtB = dtA.clone().addOrSubDay(-1)
-                .addOrSubHour(2)
-                .addOrSubMin(3)
-                .addOrSubSec(5)
-                .addOrSubMillis(600)
-
+        val dtB = dtA.clone() - 1.days() + 2.hours() + 3.mins() + 5.secs() + 600.millis()
         //        IDuration du = dtA.during(dtB);
         val duForm = dtB - dtA
         log.info("A is {} ({}), B is {} ({})", dtA.toString(), dtA.stamp(), dtB.toString(), dtB.stamp())
@@ -203,7 +200,7 @@ class ImmutableDatetimeTest:TestCase(){
         log.info("total {} seconds", duForm.totalSecs())
         log.info("total {} milliseconds", duForm.totalMillis())
 
-        val dtC = dtA.addOrSubMillis(duForm.totalMillis())
+        val dtC = dtA + Millis(duForm.totalMillis().toInt()) // . addOrSubMillis(duForm.totalMillis())
         assertEquals(dtC.stamp(), dtB.stamp())
     }
 }

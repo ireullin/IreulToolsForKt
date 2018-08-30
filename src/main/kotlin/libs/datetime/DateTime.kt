@@ -12,11 +12,15 @@ interface Datetime : ReadOnlyDatetime {
     fun sec(v: Int): Datetime
     fun millis(v: Int): Datetime
 
-    fun addOrSubDay(v: Int): Datetime
-    fun addOrSubHour(v: Int): Datetime
-    fun addOrSubMin(v: Int): Datetime
-    fun addOrSubSec(v: Int): Datetime
-    fun addOrSubMillis(v: Long): Datetime
+//    fun addOrSubDay(v: Int): Datetime
+//    fun addOrSubHour(v: Int): Datetime
+//    fun addOrSubMin(v: Int): Datetime
+//    fun addOrSubSec(v: Int): Datetime
+//    fun addOrSubMillis(v: Long): Datetime
+
+    operator fun minus(dt: ReadOnlyDatetime):Duration
+    operator fun minus(dur: Interval):Datetime
+    operator fun plus(dur: Interval):Datetime
 
     /*
     It's the only method which changes inner value.
@@ -29,4 +33,5 @@ interface Datetime : ReadOnlyDatetime {
     fun toTimeZone(tz: TimeZone): Datetime
     fun toUTC(): Datetime
     fun toLocalTime(): Datetime
+    fun peek( callback: (ReadOnlyDatetime)->Unit ): Datetime
 }
