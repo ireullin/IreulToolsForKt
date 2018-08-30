@@ -1,5 +1,6 @@
 package libs.datetime
 
+import com.fasterxml.jackson.annotation.JsonGetter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -9,6 +10,7 @@ class ImmutableDatetime : Datetime {
 
     private val calendar = GregorianCalendar()
 
+    @JsonGetter("zone")
     override fun getTimeZone(): TimeZone = calendar.timeZone
 
     private constructor()
@@ -133,6 +135,7 @@ class ImmutableDatetime : Datetime {
         return sdf.format(calendar.time)
     }
 
+    @JsonGetter("time")
     override fun toString(): String = toString("yyyy-MM-dd HH:mm:ss.SSS")
 
     override fun equals(o: Any?): Boolean {

@@ -12,7 +12,9 @@ class ImmutableDatetimeTest:TestCase(){
     @Test
     fun testSerial() {
         val dt = ImmutableDatetime.of(1980,8,4,13,12,10, 0)
-        log.info(Json.stringify(dt))
+        val stringified = Json.stringify(dt)
+        val answer = """{"zone":"Asia/Taipei","time":"1980-08-04 13:12:10.000"}"""
+        assertEquals(stringified, answer)
     }
 
     @Test
@@ -26,7 +28,6 @@ class ImmutableDatetimeTest:TestCase(){
             log.error("error", e)
             TestCase.assertEquals(false, true)
         }
-
 
         try {
             val pre = ImmutableDatetime.of(2016, 5, 4, 23, 30, 59, 0)
