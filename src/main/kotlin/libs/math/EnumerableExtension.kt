@@ -42,7 +42,7 @@ data class Statistics(val sum:Double, val mean:Double, val variance:Double, val 
 /**
  * 計算變異數 標準差 總和與平均
  */
-fun List<Double>.statistical(ddof:Int=1):Statistics{
+fun List<Double>.statistical(ddof:Int=0):Statistics{
     val sm = this.sumAndMean()
     val leastSqrt = this.sumByDouble { Math.pow(it-sm.mean, 2.0) }
     val variance = leastSqrt / (this.size-ddof)
@@ -53,7 +53,7 @@ fun List<Double>.statistical(ddof:Int=1):Statistics{
 /**
  * 協方差
  */
-fun List<Double>.covariance(t:List<Double>, ddof:Int=1):Double{
+fun List<Double>.covariance(t:List<Double>, ddof:Int=0):Double{
     require(t.size==this.size)
     val xBar = this.sumAndMean().mean
     val yBar = t.sumAndMean().mean
@@ -64,7 +64,7 @@ fun List<Double>.covariance(t:List<Double>, ddof:Int=1):Double{
 /**
  * 皮爾森係數
  */
-fun List<Double>.pearson(t:List<Double>, ddof:Int=1):Double{
+fun List<Double>.pearson(t:List<Double>, ddof:Int=0):Double{
     val cov = this.covariance(t,ddof)
     val xStdev = this.statistical(ddof).stdev
     val yStdev = t.statistical(ddof).stdev
