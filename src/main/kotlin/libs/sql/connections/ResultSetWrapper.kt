@@ -1,11 +1,8 @@
 package libs.sql.connections
 
-import org.slf4j.LoggerFactory
 import java.sql.ResultSet
 
 class ResultSetWrapper(val rs: ResultSet):SqlRow{
-    private val log = LoggerFactory.getLogger(ResultSetWrapper::class.java)
-
     override fun next() = this.rs.next()
 
     /**

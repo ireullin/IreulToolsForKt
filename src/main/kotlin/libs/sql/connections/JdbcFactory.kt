@@ -24,6 +24,9 @@ class JdbcFactory(private val cn: Connection):SqlConnection{
 
         fun newSqlite(filename:String)
             = JdbcFactory(DriverManager.getConnection("jdbc:sqlite:$filename"))
+
+        fun newSqliteInMemory()
+                = JdbcFactory(DriverManager.getConnection("jdbc:sqlite::memory"))
     }
 
 

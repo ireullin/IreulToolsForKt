@@ -1,6 +1,5 @@
 package libs.sql.statements
 
-import org.slf4j.LoggerFactory
 import java.util.ArrayList
 
 class Insert{
