@@ -4,13 +4,13 @@ import junit.framework.TestCase
 import libs.sql.statements.Insert
 import org.junit.Test
 
-class SqlitConnectionTest: TestCase() {
+class ConnectionTest: TestCase() {
 
     @Test
     fun testSqlite() {
         val file = "/tmp/test.sqlite"
         val tbname = "tb1"
-        SqlitConnection(file).use { cn ->
+        JdbcFactory.newSqlite(file).use { cn ->
             val drop = "DROP TABLE IF EXISTS $tbname"
             cn.execMutiCommands(drop)
 

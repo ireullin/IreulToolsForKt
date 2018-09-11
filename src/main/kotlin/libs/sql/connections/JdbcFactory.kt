@@ -1,12 +1,31 @@
 package libs.sql.connections
 
+import java.sql.Connection
 import java.sql.DriverManager
 
 
-class SqlitConnection(filename:String):SqlConnection{
+class JdbcFactory(private val cn: Connection):SqlConnection{
 
-    val url = "jdbc:sqlite:$filename"
-    private val cn = DriverManager.getConnection(url)
+    companion object {
+        fun newPostgreSql(host: String, dbname: String, port: String, user: String, password: String)
+                = JdbcFactory(DriverManager.getConnection("jdbc:postgresql://$host:$port/$dbname", user, password))
+
+        fun newPostgreSql(host:String, dbname:String, user:String, password:String)
+                = newPostgreSql(host, dbname, "5432", user, password)
+
+        fun newPostgreSql(info:Map<String,String>)
+                = newPostgreSql(
+                    info.getOrDefault("host","unknown_host"),
+                    info.getOrDefault("dbname","unknown_dbname"),
+                    info.getOrDefault("port","5432"),
+                    info.getOrDefault("user","unknown_user"),
+                    info.getOrDefault("password","unknown_password")
+                )
+
+        fun newSqlite(filename:String)
+            = JdbcFactory(DriverManager.getConnection("jdbc:sqlite:$filename"))
+    }
+
 
     /**
      * callback返回null即停止
@@ -15,7 +34,7 @@ class SqlitConnection(filename:String):SqlConnection{
         val buff = arrayListOf<T>()
         var i = 0
         this.cn.prepareStatement(cmd).use { pst->
-            PostgreSqlRow(pst.executeQuery()).use { row->
+            ResultSetWrapper(pst.executeQuery()).use { row->
                 while (row.next()){
                     val rc = callback(i++, row)
                     if(rc==null){
