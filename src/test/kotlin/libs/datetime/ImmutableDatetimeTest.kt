@@ -21,7 +21,7 @@ class ImmutableDatetimeTest:TestCase(){
     fun testAddorSub() {
         try {
             val pre = ImmutableDatetime.of(2016, 5, 4, 23, 30, 59, 0)
-            val cur = pre + 90.days()
+            val cur = pre + 90.days
             log.info(cur.toString())
             assertEquals("2016-08-02 23:30:59", cur.toString("yyyy-MM-dd HH:mm:ss"))
         } catch (e: Exception) {
@@ -31,7 +31,7 @@ class ImmutableDatetimeTest:TestCase(){
 
         try {
             val pre = ImmutableDatetime.of(2016, 5, 4, 23, 30, 59, 0)
-            val cur = pre + (48 * 60 * 60 * 1000).millis()
+            val cur = pre + (48 * 60 * 60 * 1000).millis
             log.info(cur.toString())
             assertEquals("2016-05-06 23:30:59", cur.toString("yyyy-MM-dd HH:mm:ss"))
         } catch (e: Exception) {
@@ -43,7 +43,7 @@ class ImmutableDatetimeTest:TestCase(){
         // 閏年
         try {
             val pre = ImmutableDatetime.of(2016, 2, 27, 23, 30, 59, 0)
-            val cur = pre + 2.days()
+            val cur = pre + 2.days
             log.info(cur.toString())
             assertEquals("2016-02-29 23:30:59", cur.toString("yyyy-MM-dd HH:mm:ss"))
         } catch (e: Exception) {
@@ -55,7 +55,7 @@ class ImmutableDatetimeTest:TestCase(){
         // 沒閏年
         try {
             val pre = ImmutableDatetime.of(2015, 2, 27, 23, 30, 59, 0)
-            val cur = pre + 2.days()
+            val cur = pre + 2.days
             log.info(cur.toString())
             assertEquals("2015-03-01 23:30:59", cur.toString("yyyy-MM-dd HH:mm:ss"))
         } catch (e: Exception) {
@@ -180,7 +180,7 @@ class ImmutableDatetimeTest:TestCase(){
 
         try {
             val read = ImmutableDatetime.readFrom("2010-03-01 10:00:00", "yyyy-MM-dd HH:mm:ss")
-            val dt6 = read - 3.days() + 73.hours() - 120.mins() + 5.secs() + 1500.millis()
+            val dt6 = read - 3.days + 73.hours - 120.mins + 5.secs + 1500.millis
             log.info(dt6.toString())
             assertEquals("2010-03-01 09:00:06.500", dt6.toString())
         } catch (e: Exception) {
@@ -190,7 +190,7 @@ class ImmutableDatetimeTest:TestCase(){
         log.info("==============================")
 
         val dtA = ImmutableDatetime.now()
-        val dtB = dtA.clone() - 1.days() + 2.hours() + 3.mins() + 5.secs() + 600.millis()
+        val dtB = dtA.clone() - 1.days + 2.hours + 3.mins + 5.secs + 600.millis
         //        IDuration du = dtA.during(dtB);
         val duForm = dtB - dtA
         log.info("A is {} ({}), B is {} ({})", dtA.toString(), dtA.stamp(), dtB.toString(), dtB.stamp())

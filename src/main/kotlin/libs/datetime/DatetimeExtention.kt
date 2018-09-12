@@ -7,8 +7,8 @@ class Mins(override val v:Int):Interval
 class Secs(override val v:Int):Interval
 class Millis(override val v:Int):Interval
 
-fun Int.days() = Days(this)
-fun Int.hours() = Hours(this)
-fun Int.mins() = Mins(this)
-fun Int.secs() = Secs(this)
-fun Int.millis() = Millis(this)
+val Int.days get() = Days(this)
+val Int.hours get() = Hours(this)
+val Int.mins get() = Mins(this)
+val Int.secs get() = Secs(this)
+val Int.millis get() = Millis(this)
