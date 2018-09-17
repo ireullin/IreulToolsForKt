@@ -11,3 +11,5 @@ class Json(val parserInstance:ObjectMapper){
     fun stringify(obj:Any) = parserInstance.writeValueAsString(obj)
     fun parse(s:String) = parserInstance.readTree(s)
 }
+
+fun Any.toJson() = Json.stringify(this)
