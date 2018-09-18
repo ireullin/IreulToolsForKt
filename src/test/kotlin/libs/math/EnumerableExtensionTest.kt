@@ -46,8 +46,8 @@ class EnumerableExtensionTest: TestCase() {
     fun testCovarianceAndPearson() {
         val example1 = listOf(1,2,3,4,5,6).toDoubleList()
         val example2 = listOf(7,8,9,1,2,3).toDoubleList()
-        assertEquals(example1.covariance(example2), -4.6)
-        assertEquals(example1.pearson(example2), -0.7219295436604962)
+        assert(example1.covariance(example2) - 3.8333333333333335 < 0.00000001)
+        assert(example1.pearson(example2) - 0.7219295436604962 < 0.00000001)
     }
 
     @Test
