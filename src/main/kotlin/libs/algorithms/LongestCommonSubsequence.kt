@@ -15,12 +15,9 @@ fun lcsSimilarity(x:String, y:String):Double = lcsSimilarity(x.toList(), y.toLis
 fun <T> lcsSimilarity(x:List<T>, y:List<T>):Double{
     var score = 0.0
     val lcs = LongestCommonSubsequence(x,y)
-    println(lcs)
     val overlappeds = lcs.findOverlappeds().toSet().filter { it.size>1 }
-    println(overlappeds)
     overlappeds.forEach{
         val elementSize = it.size.toDouble()
-        println("${it} ${elementSize} ")
         score += (elementSize / x.size)
         score += (elementSize / y.size)
     }
