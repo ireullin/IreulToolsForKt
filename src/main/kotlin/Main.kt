@@ -1,3 +1,3 @@
 fun main(args: Array<String>) {
-    println("f")
+    println( 5.times(10) )
 }
