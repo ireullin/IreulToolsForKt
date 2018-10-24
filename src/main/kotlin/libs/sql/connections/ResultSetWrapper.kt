@@ -12,6 +12,8 @@ class ResultSetWrapper(val rs: ResultSet):SqlRow{
 
     override operator fun get(columnName:String) = rs.getString(columnName)
 
+    override val resultSet:ResultSet get() = rs
+
     override val size by lazy { this.rs.metaData.columnCount }
 
     override fun columnsName() = (1..size).map { rs.metaData.getColumnName(it)}
