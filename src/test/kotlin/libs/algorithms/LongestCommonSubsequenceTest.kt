@@ -27,14 +27,14 @@ class LongestCommonSubsequenceTest:TestCase() {
                 """[["f","u","c","k","_"],["f","u","c","k","_"],["_","f","u","c","k"],["f","u","c","k","_"],["_","f","u","c","k","_"]]"""
         )
 
-        assertEquals(lcsSimilarity(x,y), 1.880514705882352)
+        assertEquals(0.667279411764706, lcsSimilarity(x,y))
 
         val lcsInt = LongestCommonSubsequence(x.map { it.toInt() },y.map { it.toInt() })
         println(lcsInt)
         val sum = lcsInt.findOverlappeds{it.sum()}.sum()
         assertEquals(sum, 3214)
         val simi = lcsSimilarity(x.map { it.toInt() },y.map { it.toInt() })
-        assertEquals(simi, 1.880514705882352)
+        assertEquals(0.667279411764706,simi)
 
         val s1 = "水來自海上上海自來水"
         val s2 = "上海自來水水來自海上"
