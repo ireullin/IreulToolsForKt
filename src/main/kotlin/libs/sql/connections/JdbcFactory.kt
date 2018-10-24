@@ -7,13 +7,13 @@ import java.sql.DriverManager
 class JdbcFactory(private val cn: Connection):SqlConnection{
 
     companion object {
-        fun newPostgreSql(host: String, dbname: String, port: String, user: String, password: String)
+        fun newPostgreSql(host: String, dbname: String, port: String, user: String, password: String):SqlConnection
                 = JdbcFactory(DriverManager.getConnection("jdbc:postgresql://$host:$port/$dbname", user, password))
 
-        fun newPostgreSql(host:String, dbname:String, user:String, password:String)
+        fun newPostgreSql(host:String, dbname:String, user:String, password:String):SqlConnection
                 = newPostgreSql(host, dbname, "5432", user, password)
 
-        fun newPostgreSql(info:Map<String,String>)
+        fun newPostgreSql(info:Map<String,String>):SqlConnection
                 = newPostgreSql(
                     info.getOrDefault("host","unknown_host"),
                     info.getOrDefault("dbname","unknown_dbname"),
@@ -22,10 +22,10 @@ class JdbcFactory(private val cn: Connection):SqlConnection{
                     info.getOrDefault("password","unknown_password")
                 )
 
-        fun newSqlite(filename:String)
+        fun newSqlite(filename:String):SqlConnection
             = JdbcFactory(DriverManager.getConnection("jdbc:sqlite:$filename"))
 
-        fun newSqliteInMemory()
+        fun newSqliteInMemory():SqlConnection
                 = JdbcFactory(DriverManager.getConnection("jdbc:sqlite::memory"))
     }
 
