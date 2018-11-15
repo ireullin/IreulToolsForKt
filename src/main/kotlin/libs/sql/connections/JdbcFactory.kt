@@ -57,16 +57,14 @@ class JdbcFactory(val cn: Connection):SqlConnection{
     /**
      * callback返回null即停止
      */
-    override fun <T> query(cmd:String, callback:(SqlRow)->T?) = queryIndexed(cmd, { i, row-> callback(row)})
+    override fun <T> query(cmd:String, callback:(SqlRow)->T?) = queryIndexed(cmd, { _, row-> callback(row)})
 
     override fun queryToMap(cmd:String) = query(cmd, {it.toMap()})
 
     override fun queryToList(cmd:String) = query(cmd, {it.toList()})
 
     override fun execMutiCommands(cmd:String){
-        this.cn.prepareStatement(cmd).use { pst ->
-            val rc = pst.executeUpdate()
-        }
+        this.cn.prepareStatement(cmd).use{ pst -> pst.executeUpdate() }
     }
 
     override fun close() {
