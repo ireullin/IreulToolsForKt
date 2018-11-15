@@ -4,9 +4,12 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 
-class JdbcFactory(private val cn: Connection):SqlConnection{
+class JdbcFactory(val cn: Connection):SqlConnection{
 
     companion object {
+        fun newOracle(host: String, dbname: String, port: String, user: String, password: String):SqlConnection
+                = JdbcFactory(DriverManager.getConnection("jdbc:oracle:thin:@$host:$port/$dbname", user, password))
+
         fun newPostgreSql(host: String, dbname: String, port: String, user: String, password: String):SqlConnection
                 = JdbcFactory(DriverManager.getConnection("jdbc:postgresql://$host:$port/$dbname", user, password))
 
@@ -34,7 +37,7 @@ class JdbcFactory(private val cn: Connection):SqlConnection{
      * callback返回null即停止
      */
     override fun <T> queryIndexed(cmd:String, callback:(Int, SqlRow)->T?):List<T>{
-        val buff = arrayListOf<T>()
+        val buff = mutableListOf<T>()
         var i = 0
         this.cn.prepareStatement(cmd).use { pst->
             ResultSetWrapper(pst.executeQuery()).use { row->

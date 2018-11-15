@@ -5,6 +5,16 @@ import libs.sql.statements.Insert
 import org.junit.Test
 
 class ConnectionTest: TestCase() {
+//
+//    @Test
+//    fun testOracle() {
+//        JdbcFactory.newOracle("dbaord01.idc1.ux","aord","1521","uauireulin","suzWF26G").use {cn ->
+//            val cmd = "select * from UAORD01.BRAND_LIST;"
+//            cn.query(cmd){
+//                println(it)
+//            }
+//        }
+//    }
 
     @Test
     fun testSqlite() {
@@ -26,8 +36,5 @@ class ConnectionTest: TestCase() {
             val result = cn.queryToList(select)
             println(result)
         }
-
-
-
     }
 }
