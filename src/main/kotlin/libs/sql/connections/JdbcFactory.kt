@@ -4,7 +4,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 
-class JdbcFactory(val cn: Connection):SqlConnection{
+class JdbcFactory(private val cn: Connection):SqlConnection{
 
     companion object {
         fun newOracle(host: String, dbname: String, port: String, user: String, password: String):SqlConnection
@@ -66,6 +66,12 @@ class JdbcFactory(val cn: Connection):SqlConnection{
     override fun execMutiCommands(cmd:String){
         this.cn.prepareStatement(cmd).use{ pst -> pst.executeUpdate() }
     }
+
+    override val javaSqlConnection:Connection
+        get() = cn
+
+    override val isValid:Boolean
+        get() = cn.isValid(30)
 
     override fun close() {
         this.cn.close()
