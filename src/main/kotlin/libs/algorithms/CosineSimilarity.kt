@@ -1,18 +1,31 @@
 package libs.algorithms
 
 import java.util.*
-
-class CosineSimilarity<T>(private val a:Set<T>, private val b:Set<T>) {
+class CosineSimilarity<T>{
     companion object {
         fun <T> of(a:Set<T>, b:Set<T>) = CosineSimilarity(a, b).calculate()
+        fun <T> of(a:Map<T,Double>, b:Map<T,Double>)= CosineSimilarity(a, b).calculate()
     }
 
-    private val union = TreeSet<T>().apply {
-        addAll(a)
-        addAll(b)
+    private val union = TreeSet<T>()
+    private var a:Map<T,Double>
+    private var b:Map<T,Double>
+
+    constructor(x:Map<T,Double>, y:Map<T,Double>){
+        a = x
+        b = y
+        union.addAll(a.keys)
+        union.addAll(b.keys)
     }
 
-    fun calculate():Double? {
+    constructor(x:Set<T>, y:Set<T>){
+        a = x.map{ it to 1.0 }.toMap()
+        b = y.map{ it to 1.0 }.toMap()
+        union.addAll(a.keys)
+        union.addAll(b.keys)
+    }
+
+    fun calculate():Double {
         val vecA = toVector(a)
         val vecB = toVector(b)
 
@@ -24,11 +37,8 @@ class CosineSimilarity<T>(private val a:Set<T>, private val b:Set<T>) {
         return aDotB / aCrossB
     }
 
-    private fun toVector(src:Set<T>):List<Double> {
-        return union.map {
-            if(src.contains(it)){1.0}
-            else {0.0}
-        }
+    private fun toVector(src:Map<T,Double>):List<Double> {
+        return union.map {src.getOrDefault(it, 0.0)}
     }
 
     override fun toString():String {
@@ -45,6 +55,4 @@ class CosineSimilarity<T>(private val a:Set<T>, private val b:Set<T>) {
 
         return sb.toString()
     }
-
-
 }

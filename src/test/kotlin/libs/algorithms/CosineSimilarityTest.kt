@@ -17,6 +17,14 @@ class CosineSimilarityTest:TestCase() {
         val cs = CosineSimilarity(a,b)
         println(cs)
         assertEquals(cs.calculate(), 0.4472135954999579)
+    }
 
+    @Test
+    fun test2() {
+        val a = mapOf("we" to 0.8 ,"fucking" to 0.9 ,"never" to 0.2, "die" to 0.4)
+        val b = mapOf("we" to 0.45 ,"fucking" to 0.45 ,"never" to 0.1, "die" to 0.5)
+        val cs = CosineSimilarity(a,b)
+        println(cs)
+        assertEquals(cs.calculate(), 0.9403368069734908)
     }
 }
