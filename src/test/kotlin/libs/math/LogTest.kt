@@ -2,7 +2,6 @@ package libs.math
 
 import junit.framework.TestCase
 import org.junit.Test
-import kotlin.math.log
 
 class LogTest: TestCase() {
 
@@ -17,4 +16,15 @@ class LogTest: TestCase() {
         assertEquals(log2(2), 1.0)
         assertEquals(log2(1), 0.0)
     }
+
+    @Test
+    fun testDecay(){
+        val dacay1 = Decay(100.0, 0.8)
+        val dacay2 = Decay(100.0, 1.0)
+        val dacay3 = Decay(100.0, 1.4)
+        (0..100).forEach {x->
+            println("$x\t${dacay1.on(x.toDouble())}\t${dacay2.on(x.toDouble())}\t${dacay3.on(x.toDouble())}")
+        }
+    }
+
 }
