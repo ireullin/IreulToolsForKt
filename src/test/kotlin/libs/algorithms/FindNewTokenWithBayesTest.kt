@@ -18,45 +18,33 @@ class FindNewTokenWithBayesTest:TestCase(){
 
     @Test
     fun test1() {
-        val path = Paths.get("").toAbsolutePath().parent.parent.toString()+"/testData/一年战争.txt"
-        if(!File(path).exists())
-            return
+        try {
+            val path = Paths.get("").toAbsolutePath().parent.parent.toString() + "/testData/一年战争.txt"
+            val lines = File(path).readLines()
 
-        val lines = File(path).readLines()
+            val tb = TokenBuilder(lines).dumpStatus {println(it)}
+                    .cutBy(ChineseCutter()).dumpStatus("cut by chinese") {println(it)}
+                    .cutBy(GarbageCutter()).dumpStatus("cut by garbage") {println(it)}
+                    .dropIf {_,v-> v.isBlank()}.dumpStatus("drop blank    ") {println(it)}.tokens()
 
-        val tb = TokenBuilder(lines).dumpStatus{ println(it) }
-                .cutBy(ChineseCutter()).dumpStatus("cut by chinese"){println(it) }
-                .cutBy(GarbageCutter()).dumpStatus("cut by garbage"){println(it) }
-                .dropIf{i,v->v.trim().isBlank()}.dumpStatus("drop blank    "){println(it) }
-                .tokens()
+            println(tb)
 
-        println(tb)
+            val model = FindNewTokenWithBayes(tb)
+            val stat = model.statistics()
+            stat.forEach {
+                println(it.map {it.name})
+                print(it.map {it.score.toDouble()}.statistical())
+                println("median=" + it.map {it.score.toDouble()}.median())
+                println()
+            }
 
-        val model = FindNewTokenWithBayes(tb)
-        val stat = model.statistics()
-        stat.forEach{
-            println(it.map {it.name})
-            print( it.map{it.score.toDouble()}.statistical() )
-            println( "median="+it.map{it.score.toDouble()}.median() )
-            println()
+            val dict = model.showVerbose {log-> println(log)}.minTf(2).maxTokenLength(4).probThreshold(2, 1.0).probThreshold(3, 1.0).probThreshold(4, 1.0).probThreshold(5, 1.0).calculate().values.filterNot {isNumber(it.name)}.filterNot {areAllEnglishChars(it.name)}.sortedBy {it.score}.map {listOf(it.name, it.score)}
+
+            println(dict)
+        }catch(e:Exception){
+            println(e.message)
+            e.printStackTrace()
         }
-
-        val dict = model
-                .showVerbose{ log -> println(log) }
-                .minTf(2)
-                .maxTokenLength(4)
-                .probThreshold(2,1.0)
-                .probThreshold(3,1.0)
-                .probThreshold(4,1.0)
-                .probThreshold(5,1.0)
-                .calculate()
-                .values
-                .filterNot{ isNumber(it.name) }
-                .filterNot{ areAllEnglishChars(it.name) }
-                .sortedBy{it.score}
-                .map{listOf(it.name, it.score)}
-
-        println(dict)
     }
 
 
