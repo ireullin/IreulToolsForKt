@@ -1,25 +1,28 @@
 package libs.tokenizers
 
-import libs.datetime.ImmutableDatetime
+import libs.datetime.Datetime
+import libs.datetime.now
 import libs.tokenizers.cutters.Cutter
 import java.util.*
 
-class TokenBuilder (sentences: List<String>, private val saveStatus: Boolean=false) {
-    constructor(sentence: String, saveStatus: Boolean=false):this(listOf(sentence), saveStatus)
+class TokenBuilder (sentences: List<String>){
+    constructor(sentence: String):this(listOf(sentence))
 
-    class Status(val desc: String, val time: String, val status: List<String>) {
-        override fun toString() = """{'time':'$time', 'desc':'$desc', 'status':['${status.joinToString("','")}']}"""
+    class Status(val desc:String, val time:Datetime, val status:List<String>) {
+        override fun toString() = """{"time":"$time", "desc":"$desc", "status":["${status.joinToString("\",\"")}"]}"""
     }
+
+    fun dumpStatus(desc:String="", callback:((Status)->Unit)?):TokenBuilder{
+        callback?.invoke(Status(desc, now(), ArrayList(this.tokens)))
+        return this
+    }
+
 
     private var tokens = run{
         val buff = mutableListOf<String>()
         buff.addAll(sentences)
         buff
     }
-
-    private val statuses = mutableListOf<Status>()
-    fun statuses() = this.statuses
-
 
     fun dropRedundancy(): TokenBuilder {
         // 為了保持順序一致性，所以用foreach
@@ -57,7 +60,7 @@ class TokenBuilder (sentences: List<String>, private val saveStatus: Boolean=fal
         return this
     }
 
-    fun dropIfMatch(callback: (Int, String)->Boolean): TokenBuilder {
+    fun dropIf(callback: (Int, String)->Boolean): TokenBuilder {
         val newTokens = ArrayList<String>(this.tokens.size)
         for (i in this.tokens.indices) {
             val token = this.tokens[i]
@@ -75,27 +78,5 @@ class TokenBuilder (sentences: List<String>, private val saveStatus: Boolean=fal
     fun peek(msg: (List<String>)->Unit): TokenBuilder {
         msg(tokens)
         return this
-    }
-
-    fun saveStatus(description: String): TokenBuilder {
-        if (!this.saveStatus) {
-            return this
-        }
-
-        val dup = ArrayList(this.tokens)
-        val status = Status(description, ImmutableDatetime.now().toString(), dup)
-        this.statuses.add(status)
-        return this
-    }
-
-    companion object {
-        fun isAllNumber(s: String): Boolean {
-            try {
-                Integer.parseInt(s)
-                return true
-            } catch (e: Exception) {
-                return false
-            }
-        }
     }
 }

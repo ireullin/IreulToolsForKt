@@ -4,9 +4,12 @@ import junit.framework.TestCase
 import libs.math.median
 import libs.math.statistical
 import libs.tokenizers.TokenBuilder
+import libs.tokenizers.areAllEnglishChars
 import libs.tokenizers.cutters.ChineseCutter
 import libs.tokenizers.cutters.EnglishCutter
 import libs.tokenizers.cutters.GarbageCutter
+import libs.tokenizers.isNumber
+import libs.tokenizers.usualTokenizer1
 import org.junit.Test
 import java.io.File
 import java.nio.file.Paths
@@ -17,14 +20,16 @@ class FindNewTokenWithBayesTest:TestCase(){
     fun test1() {
         val path = Paths.get("").toAbsolutePath().parent.parent.toString()+"/testData/一年战争.txt"
         val lines = File(path).readLines()
-        val tb = TokenBuilder(lines,true).saveStatus("init")
-                .cutBy(ChineseCutter()).saveStatus("cut by chinese")
-                .cutBy(GarbageCutter()).saveStatus("cut by garbage")
-                .dropIfMatch{i,v->v.isBlank()}.saveStatus("drop blank")
 
-        tb.statuses().forEach{println(it)}
+        val tb = TokenBuilder(lines).dumpStatus{ println(it) }
+                .cutBy(ChineseCutter()).dumpStatus("cut by chinese"){println(it) }
+                .cutBy(GarbageCutter()).dumpStatus("cut by garbage"){println(it) }
+                .dropIf{i,v->v.trim().isBlank()}.dumpStatus("drop blank    "){println(it) }
+                .tokens()
 
-        val model = FindNewTokenWithBayes(tb.tokens())
+        println(tb)
+
+        val model = FindNewTokenWithBayes(tb)
         val stat = model.statistics()
         stat.forEach{
             println(it.map {it.name})
@@ -43,17 +48,14 @@ class FindNewTokenWithBayesTest:TestCase(){
                 .probThreshold(5,1.0)
                 .calculate()
                 .values
-                .filterNot{ isNumeric(it.name) }
-                .filterNot{ EnglishCutter.isAllEnglish(it.name) }
+                .filterNot{ isNumber(it.name) }
+                .filterNot{ areAllEnglishChars(it.name) }
                 .sortedBy{it.score}
                 .map{listOf(it.name, it.score)}
 
         println(dict)
     }
 
-    fun isNumeric(strNum:String):Boolean {
-        return strNum.matches("-?\\d+(\\.\\d+)?".toRegex())
-    }
 
 
 }
