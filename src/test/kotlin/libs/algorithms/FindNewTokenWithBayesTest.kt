@@ -19,6 +19,9 @@ class FindNewTokenWithBayesTest:TestCase(){
     @Test
     fun test1() {
         val path = Paths.get("").toAbsolutePath().parent.parent.toString()+"/testData/一年战争.txt"
+        if(!File(path).exists())
+            return
+
         val lines = File(path).readLines()
 
         val tb = TokenBuilder(lines).dumpStatus{ println(it) }
