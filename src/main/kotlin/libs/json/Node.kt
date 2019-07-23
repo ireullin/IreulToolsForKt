@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 
 
-class Node private constructor(val om:ObjectMapper, protected val obj:Any?){
+class Node private constructor(val om:ObjectMapper, private val obj:Any?){
     companion object {
         fun ofMap(s:String):Node{
             val om = ObjectMapper()
