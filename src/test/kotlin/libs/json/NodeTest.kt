@@ -5,6 +5,13 @@ import org.junit.Test
 
 class NodeTest:TestCase(){
 
+    @Test
+    fun testDouble(){
+        val n = Node.ofMap(sample())
+        println(n["contents"][1]["price"].toDouble())
+
+    }
+
     /**
      * 測試string輸出會不會夾帶特殊符號
      */
@@ -72,12 +79,14 @@ class NodeTest:TestCase(){
     {
         "productID": 34,
         "productName": "SuperWidget",
-        "quantity": 1
+        "quantity": 1,
+        "price": 1.1
     },
     {
         "productID": 56,
         "productName": "WonderWidget",
-        "quantity": 3
+        "quantity": 3,
+        "price": 0.99
     }
     ],
     "orderCompleted": true
