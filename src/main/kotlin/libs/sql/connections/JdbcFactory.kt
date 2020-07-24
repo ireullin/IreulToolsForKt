@@ -10,6 +10,9 @@ class JdbcFactory(private val cn: Connection):SqlConnection{
         fun newOracle(host: String, dbname: String, port: String, user: String, password: String):SqlConnection
                 = JdbcFactory(DriverManager.getConnection("jdbc:oracle:thin:@$host:$port/$dbname", user, password))
 
+        fun newMySql(host: String, dbname: String, port: String, user: String, password: String):SqlConnection
+                = JdbcFactory(DriverManager.getConnection("jdbc:mysql://$host:$port/$dbname", user, password))
+
         fun newPostgreSql(host: String, dbname: String, port: String, user: String, password: String):SqlConnection
                 = JdbcFactory(DriverManager.getConnection("jdbc:postgresql://$host:$port/$dbname", user, password))
 
