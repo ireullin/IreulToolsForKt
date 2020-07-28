@@ -3,11 +3,11 @@ package libs.sql.pool
 import com.zaxxer.hikari.HikariConfig
 
 sealed class DbType{
-    class Mysql(val host:String, val dbname:String, val user:String, val password:String, val port:Int=5432): DbType(){
+    class Mysql(val host:String, val dbname:String, val user:String, val password:String, val port:Int=3306): DbType(){
         override fun toString() = "jdbc:mysql://$host:$port/$dbname"
     }
 
-    class PostgreSql(val host:String, val dbname:String, val user:String, val password:String, val port:Int=3306): DbType(){
+    class PostgreSql(val host:String, val dbname:String, val user:String, val password:String, val port:Int=5432): DbType(){
         override fun toString() = "jdbc:postgresql://$host:$port/$dbname"
     }
 

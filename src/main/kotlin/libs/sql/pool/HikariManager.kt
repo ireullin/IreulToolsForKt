@@ -2,9 +2,11 @@ package libs.sql.pool
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import libs.datetime.ImmutableDatetime
 import libs.json.toJson
 import java.lang.Exception
 import java.sql.PreparedStatement
+import java.util.*
 
 
 typealias ListOfMap = List<Map<String,String>>
@@ -106,41 +108,56 @@ class HikariManager private constructor(val hikariDataSource: HikariDataSource){
 
 
 fun main(args: Array<String>) {
-    val testHm = HikariManager.newPool("test", GeneralHikariConfig(DbType.SqlLite("tmps")))
+//    val testHm = HikariManager.newPool("test", GeneralHikariConfig(DbType.SqlLite("tmps")))
+    val testHm = HikariManager.newPool("test", GeneralHikariConfig(DbType.PostgreSql("192.168.1.252","AssociationRule","postgres","0933726835")))
 
-    val created = testHm
-            .create()
-            .statement("""
-                CREATE TABLE tmp_table (
-                	name varchar(100),
-                   	age varchar(100)
-                )
-            """.trimIndent())
-            .exec()
+//    val created = testHm
+//            .create()
+//            .statement("""
+//                CREATE TABLE tmp_table (
+//                	name varchar(100),
+//                   	age varchar(100)
+//                )
+//            """.trimIndent())
+//            .exec()
+//
+//    println(created.toJson())
 
-    println(created.toJson())
+//    val now = ImmutableDatetime.now().toString()
+//    val inserted = HikariManager["test"]
+//            .create()
+//            .statement("insert into tmp_table (name, age, created_at) values(?,?,?)")
+//            .set("fucker").set("20").set(now)
+//            .addBatch()
+//            .set("mother").set(40).set(now)
+//            .addBatch()
+//            .set("father").set(50).set(now)
+//            .exec()
 
-    val inserted = HikariManager["test"]
-            .create()
-            .statement("insert into tmp_table (name, age) values(?,?)")
-            .set("fucker").set("20")
-            .addBatch()
-            .set("mother").set(40)
-            .addBatch()
-            .set("father").set(50)
-            .exec()
 
+//    println(inserted.toJson())
 
-    println(inserted.toJson())
+    while(true) {
+        val buyers = HikariManager["test"]
+                .create()
+                .statement("select distinct buyer_id from public.association_rule_orders")
+                .queryTo { it.first().second }
 
-    val queried = HikariManager["test"]
-            .create()
-            .statement("select * from tmp_table where age = ? or age = ?")
-            .set(20)
-            .set(40)
-            .queryToList()
+        println(buyers.toJson())
 
-    println(queried.toJson())
+        buyers.forEach{
+            val queried = HikariManager["test"]
+                    .create()
+                    .statement("select * from public.association_rule_orders where buyer_id = ?")
+                    .set(it)
+                    .queryToMap()
+
+            println(queried.toJson())
+        }
+
+        println("waiting")
+        Thread.sleep(120*1000)
+    }
 
     HikariManager.closeAllPools()
 }
