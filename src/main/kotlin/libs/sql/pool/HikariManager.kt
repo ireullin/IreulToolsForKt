@@ -2,11 +2,10 @@ package libs.sql.pool
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import libs.datetime.ImmutableDatetime
 import libs.json.toJson
 import java.lang.Exception
 import java.sql.PreparedStatement
-import java.util.*
+
 
 
 typealias ListOfMap = List<Map<String,String>>
@@ -92,6 +91,20 @@ class HikariManager private constructor(val hikariDataSource: HikariDataSource){
             return pools.get(name)!!
         }
 
+        fun newPool(name:String, dbType: DbType): HikariManager {
+            val conf = HikariConfig()
+            conf.addDataSourceProperty( "cachePrepStmts" , "true" );
+            conf.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+            conf.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+            conf.jdbcUrl = dbType.toString()
+            when(dbType){
+                is DbType.Mysql ->{ conf.username=dbType.user; conf.password=dbType.password }
+                is DbType.PostgreSql ->{ conf.username=dbType.user; conf.password=dbType.password }
+                is DbType.Oracle ->{ conf.username=dbType.user; conf.password=dbType.password }
+            }
+            return newPool(name, conf)
+        }
+
         fun closeAllPools(){
             pools.forEach { _,hm -> hm.hikariDataSource.close() }
         }
@@ -101,15 +114,13 @@ class HikariManager private constructor(val hikariDataSource: HikariDataSource){
 
     val connection get() = hikariDataSource.connection
 
-    fun create(): SqlExector {
-        return SqlExectorImp(this)
-    }
+    fun create():SqlExector=SqlExectorImp(this)
 }
 
 
 fun main(args: Array<String>) {
 //    val testHm = HikariManager.newPool("test", GeneralHikariConfig(DbType.SqlLite("tmps")))
-    val testHm = HikariManager.newPool("test", GeneralHikariConfig(DbType.PostgreSql("192.168.1.252","AssociationRule","postgres","0933726835")))
+    val testHm = HikariManager.newPool("test", DbType.PostgreSql("192.168.1.252","AssociationRule","postgres","0933726835"))
 
 //    val created = testHm
 //            .create()
