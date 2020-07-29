@@ -2,6 +2,7 @@ package libs.sql.connections
 
 import java.sql.ResultSet
 
+@Deprecated(message = "Deprecated class")
 class ResultSetWrapper(val rs: ResultSet):SqlRow{
     override fun next() = this.rs.next()
 

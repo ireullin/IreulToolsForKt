@@ -2,6 +2,7 @@ package libs.sql.statements
 
 import java.util.ArrayList
 
+@Deprecated(message = "Deprecated class")
 class Insert{
     private val table: String
     private val cols = ArrayList<String>(50)

@@ -3,7 +3,7 @@ package libs.sql.connections
 import java.sql.Connection
 import java.sql.DriverManager
 
-
+@Deprecated(message = "Deprecated class")
 class JdbcFactory(private val cn: Connection):SqlConnection{
 
     companion object {

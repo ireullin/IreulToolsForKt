@@ -2,6 +2,7 @@ package libs.sql.connections
 
 import java.sql.ResultSet
 
+@Deprecated(message = "Deprecated class")
 interface SqlRow:AutoCloseable{
     fun next():Boolean
     operator fun get(index:Int):String

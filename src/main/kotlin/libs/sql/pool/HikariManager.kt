@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource
 import libs.json.toJson
 import java.lang.Exception
 import java.sql.PreparedStatement
-
+import java.sql.Statement
 
 
 typealias ListOfMap = List<Map<String,String>>
@@ -24,6 +24,16 @@ class HikariManager private constructor(val hikariDataSource: HikariDataSource){
 
         override fun set(v:Any):SqlExector{
             params.last().add(v)
+            return this
+        }
+
+        override fun setFromList(v:List<Any>):SqlExector{
+            params.last().addAll(v)
+            return this
+        }
+
+        override fun setFromVararg(vararg v:Any):SqlExector{
+            params.last().addAll(v.toList())
             return this
         }
 
@@ -63,9 +73,9 @@ class HikariManager private constructor(val hikariDataSource: HikariDataSource){
         override fun queryToList():ListOfList = queryTo { row-> row.map{it.second} }
         override fun queryToMap():ListOfMap = queryTo { it.toMap() }
 
-        override fun exec():List<Int>{
+        override fun exec(statementOption:Int):List<Int>{
             hm.connection.use {cn->
-                cn.prepareStatement(sql).use {ps->
+                cn.prepareStatement(sql, statementOption).use { ps->
                     params.forEach {param->
                         setParams(param, ps)
                         ps.addBatch()
@@ -74,6 +84,9 @@ class HikariManager private constructor(val hikariDataSource: HikariDataSource){
                 }
             }
         }
+
+        override fun exec() = exec(Statement.RETURN_GENERATED_KEYS)
+
 
     }
 
