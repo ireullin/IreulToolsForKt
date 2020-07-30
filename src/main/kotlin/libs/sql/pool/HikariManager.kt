@@ -84,7 +84,7 @@ class HikariManager private constructor(val hikariDataSource: HikariDataSource){
                     val rs = ps.generatedKeys
                     val buff = mutableListOf<Int>()
                     while (rs.next()){
-                        buff += rs.getInt(0)
+                        buff += rs.getInt(1)
                     }
                     return buff
                 }
