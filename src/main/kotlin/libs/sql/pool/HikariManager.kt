@@ -73,21 +73,23 @@ class HikariManager private constructor(val hikariDataSource: HikariDataSource){
         override fun queryToList():ListOfList = queryTo { row-> row.map{it.second} }
         override fun queryToMap():ListOfMap = queryTo { it.toMap() }
 
-        override fun exec(statementOption:Int):List<Int>{
+        override fun exec():List<Int>{
             hm.connection.use {cn->
-                cn.prepareStatement(sql, statementOption).use { ps->
+                cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS).use { ps->
                     params.forEach {param->
                         setParams(param, ps)
                         ps.addBatch()
                     }
-                    return ps.executeBatch().toList()
+                    ps.executeBatch()
+                    val rs = ps.generatedKeys
+                    val buff = mutableListOf<Int>()
+                    while (rs.next()){
+                        buff += rs.getInt(0)
+                    }
+                    return buff
                 }
             }
         }
-
-        override fun exec() = exec(Statement.RETURN_GENERATED_KEYS)
-
-
     }
 
     companion object {

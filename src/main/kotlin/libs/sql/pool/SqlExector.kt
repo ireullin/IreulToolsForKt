@@ -13,6 +13,5 @@ interface SqlExector{
     fun queryToList():ListOfList
     fun queryToMap():ListOfMap
     fun addBatch():SqlExector
-    fun exec(statementOption:Int):List<Int>
     fun exec():List<Int>
 }
