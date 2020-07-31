@@ -75,4 +75,24 @@ class EnumerableExtensionTest: TestCase() {
         assertEquals(ce, 0.5509775004326937)
     }
 
+    fun testMovingAverage() {
+        val example = listOf(3,2,3,2,3,3,15,2,2,2,2,2,2,3,2,3,2,2,2,1).toDoubleList()
+        val ma = example.MovingAverage(5)
+        val answer = listOf(3.0,2.5,2.6666666666666665,2.5,2.6,2.6,5.2,5.0,5.0,4.8,4.6,2.0,2.0,2.2,2.2,2.4,2.4,2.4,2.2,2.0)
+        assertEquals(ma, answer)
+    }
+
+    fun testMovingAverageAndStdev() {
+        val example = listOf(3,2,3,2,3,3,15,2,2,2,2,2,2,3,2,3,2,2,2,1).toDoubleList()
+        val ma = example.MovingAverageAndStdev(5)
+
+        val mean = ma.map { it.mean }
+        val answerOfMean = listOf(3.0,2.5,2.6666666666666665,2.5,2.6,2.6,5.2,5.0,5.0,4.8,4.6,2.0,2.0,2.2,2.2,2.4,2.4,2.4,2.2,2.0)
+        assertEquals(mean, answerOfMean)
+
+        val stdev = ma.map { it.stdev }
+        val answerOfStdev = listOf(0.0, 0.5, 0.4714045207910317, 0.5, 0.4898979485566356, 0.4898979485566356, 4.915282290977803, 5.019960159204453, 5.019960159204453, 5.1146847410177685, 5.2, 0.0, 0.0, 0.39999999999999997, 0.39999999999999997, 0.4898979485566356, 0.4898979485566356, 0.4898979485566356, 0.39999999999999997, 0.6324555320336759)
+        assertEquals(stdev, answerOfStdev)
+    }
+
 }

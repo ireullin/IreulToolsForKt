@@ -1,5 +1,8 @@
 package libs.math
 
+import kotlin.math.pow
+
+
 fun List<Number>.toDoubleList() = this.map { it.toDouble() }
 
 /**
@@ -110,4 +113,41 @@ fun <T> List<T>.concitionalEntropyWith(label:List<T>):Double{
     }
 
     return concitionalEntropy
+}
+
+/**
+ * 移動平均
+ */
+fun List<Double>.MovingAverage(n:Int):List<Double>{
+    var sum = 0.0
+    return this.mapIndexed {i,v ->
+        sum += v
+        val offset = i-n
+        if(offset>=0)
+            sum -= this[offset]
+
+        val size = Math.min(i+1, n)
+        sum / size
+    }
+}
+
+/**
+ * 移動平均與標準差
+ */
+fun List<Double>.MovingAverageAndStdev(n:Int):List<Statistics>{
+    var sum = 0.0
+    return this.mapIndexed {i,v ->
+        val beg = Math.max(0, i-n+1)
+        val end = i+1;
+        val size = end-beg
+        sum += v
+        if(beg>0)
+            sum -= this[beg-1]
+
+        val mean = sum / size;
+        val sqrSum = (beg until end).map{ (this[it]-mean).pow(2) }.sum()
+        val variance = sqrSum / size
+        val stdev = Math.sqrt(variance)
+        Statistics(sum, mean, variance, stdev, 0)
+    }
 }
