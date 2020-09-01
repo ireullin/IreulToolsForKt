@@ -53,6 +53,14 @@ class LongestCommonSubsequenceTest:TestCase() {
         assertEquals(lcsSimilarity("fuck you", "fuck me"), 0.6696428571428572)
     }
 
+    @Test
+    fun testSimilarity2() {
+        assertEquals(lcsSimilarity2("fuck", "kcuf"), 0.25)
+        assertEquals(lcsSimilarity2("fuck", "fuck"), 1.0)
+        assertEquals(lcsSimilarity2("fuck you", "fuck you"), 1.0)
+        assertEquals(lcsSimilarity2("fuck you", "fuck you and me"), 0.2933333333333333)
+        assertEquals(lcsSimilarity2("fuck you", "fuck me"), 0.40625)
+    }
 
 }
 

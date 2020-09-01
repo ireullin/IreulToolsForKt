@@ -8,6 +8,7 @@ fun newLcsWithStrings(x:String, y:String) = LongestCommonSubsequence(x.toList(),
  * 計算lcs相似度
  */
 fun lcsSimilarity(x:String, y:String):Double = lcsSimilarity(x.toList(), y.toList())
+fun lcsSimilarity2(x:String, y:String):Double = lcsSimilarity2(x.toList(), y.toList())
 
 /**
  * 計算lcs相似度
@@ -23,6 +24,16 @@ fun <T> lcsSimilarity(x:List<T>, y:List<T>):Double{
     }
     return score / 2
 }
+
+
+fun <T> lcsSimilarity2(x:List<T>, y:List<T>):Double{
+    val lcs = LongestCommonSubsequence(x,y)
+    val tokens = if(x.size > y.size) lcs.cutX() else lcs.cutY()
+    val maxLengthSqr = Math.pow(max(x.size, y.size).toDouble(),2.0)
+    val score = tokens.sumByDouble { Math.pow(it.size.toDouble(), 2.0) / maxLengthSqr }
+    return score
+}
+
 
 
 class LongestCommonSubsequence<T>(val x:List<T>, val y:List<T>){
@@ -134,4 +145,53 @@ class LongestCommonSubsequence<T>(val x:List<T>, val y:List<T>){
         }
         return buff.toString()
     }
+
+
+    fun cutX():List<List<T>>{
+        val continous = (0 until x.size).map { _x ->
+            var _max = 0
+            (0 until y.size).forEach{ _y -> _max = max(matrix[_y][_x], _max)}
+            _max
+        }
+        val buff = mutableListOf<MutableList<T>>()
+        var last = 0
+        
+        x.forEachIndexed{i,c->
+            if(continous[i]!=0) {
+                if (last >= continous[i] || last==0) {
+                    buff.add(mutableListOf())
+                }
+
+                buff.last().add(c)
+            }
+            last = continous[i]
+        }
+        return buff
+    }
+
+    fun cutXToString() = cutX().map { it.joinToString("") }
+
+    fun cutY():List<List<T>>{
+        val continous = (0 until y.size).map { _y ->
+            var _max = 0
+            (0 until x.size).forEach{ _x -> _max = max(matrix[_y][_x], _max)}
+            _max
+        }
+
+        val buff = mutableListOf<MutableList<T>>()
+        var last = 0
+        y.forEachIndexed{i,c->
+            if(continous[i]!=0) {
+                if (last >= continous[i] || last==0) {
+                    buff.add(mutableListOf())
+                }
+
+                buff.last().add(c)
+            }
+            last = continous[i]
+        }
+        return buff
+    }
+
+    fun cutYToString() = cutY().map { it.joinToString("") }
 }
