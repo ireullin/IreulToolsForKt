@@ -1,40 +1,9 @@
 package libs.algorithms
 
+import kotlin.math.log2
 import kotlin.math.max
 
 fun newLcsWithStrings(x:String, y:String) = LongestCommonSubsequence(x.toList(), y.toList())
-
-/**
- * 計算lcs相似度
- */
-fun lcsSimilarity(x:String, y:String):Double = lcsSimilarity(x.toList(), y.toList())
-fun lcsSimilarity2(x:String, y:String):Double = lcsSimilarity2(x.toList(), y.toList())
-
-/**
- * 計算lcs相似度
- */
-fun <T> lcsSimilarity(x:List<T>, y:List<T>):Double{
-    var score = 0.0
-    val lcs = LongestCommonSubsequence(x,y)
-    val overlappeds = lcs.findOverlappeds().toSet().filter { it.size>1 }
-    overlappeds.forEach{
-        val elementSize = it.size.toDouble()
-        score += (elementSize / x.size)
-        score += (elementSize / y.size)
-    }
-    return score / 2
-}
-
-
-fun <T> lcsSimilarity2(x:List<T>, y:List<T>):Double{
-    val lcs = LongestCommonSubsequence(x,y)
-    val tokens = if(x.size > y.size) lcs.cutX() else lcs.cutY()
-    val maxLengthSqr = Math.pow(max(x.size, y.size).toDouble(),2.0)
-    val score = tokens.sumByDouble { Math.pow(it.size.toDouble(), 2.0) / maxLengthSqr }
-    return score
-}
-
-
 
 class LongestCommonSubsequence<T>(val x:List<T>, val y:List<T>){
 
@@ -194,4 +163,12 @@ class LongestCommonSubsequence<T>(val x:List<T>, val y:List<T>){
     }
 
     fun cutYToString() = cutY().map { it.joinToString("") }
+
+    val similarity:Double get() {
+        val tokens = if(x.size > y.size) cutX() else cutY()
+        val maxlength = max(x.size, y.size)
+        val maxLengthSqr = maxlength * log2(maxlength.toDouble())
+        val score = tokens.sumByDouble { it.size * log2(it.size.toDouble()) / maxLengthSqr }
+        return score
+    }
 }

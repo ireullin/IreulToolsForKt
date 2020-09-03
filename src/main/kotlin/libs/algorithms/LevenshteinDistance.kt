@@ -1,14 +1,12 @@
 package libs.algorithms
 
-import libs.json.toJson
+
 import java.lang.StringBuilder
 import kotlin.math.max
 
 
-/**
- * 計算ld相似度
- */
-fun ldSimilarity(x:String, y:String):Double = LevenshteinDistance(x.toList(), y.toList()).similarity
+
+fun newLdWithStrings(x:String, y:String) = LevenshteinDistance(x.toList(), y.toList())
 
 class LevenshteinDistance <T>(val x:List<T>, val y:List<T>){
 
