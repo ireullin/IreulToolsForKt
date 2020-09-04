@@ -2,7 +2,9 @@ package libs.algorithms
 
 import junit.framework.TestCase
 import libs.json.toJson
+import libs.math.round
 import org.junit.Test
+import java.lang.StringBuilder
 
 class LongestCommonSubsequenceTest:TestCase() {
 
@@ -27,14 +29,14 @@ class LongestCommonSubsequenceTest:TestCase() {
                 """[["f","u","c","k","_"],["f","u","c","k","_"],["_","f","u","c","k"],["f","u","c","k","_"],["_","f","u","c","k","_"]]"""
         )
 
-        assertEquals(0.667279411764706, lcsSimilarity(x,y))
+        assertEquals(0.39028115875346825, LongestCommonSubsequence(x,y).similarity)
 
         val lcsInt = LongestCommonSubsequence(x.map { it.toInt() },y.map { it.toInt() })
         println(lcsInt)
         val sum = lcsInt.findOverlappeds{it.sum()}.sum()
         assertEquals(sum, 3214)
-        val simi = lcsSimilarity(x.map { it.toInt() },y.map { it.toInt() })
-        assertEquals(0.667279411764706,simi)
+        val simi = LongestCommonSubsequence(x.map { it.toInt() },y.map { it.toInt() }).similarity
+        assertEquals(0.39028115875346825,simi)
 
         val s1 = "水來自海上上海自來水"
         val s2 = "上海自來水水來自海上"
@@ -46,13 +48,37 @@ class LongestCommonSubsequenceTest:TestCase() {
 
     @Test
     fun testSimilarity() {
-        assertEquals(lcsSimilarity("fuck", "kcuf"), 0.0)
-        assertEquals(lcsSimilarity("fuck", "fuck"), 1.0)
-        assertEquals(lcsSimilarity("fuck you", "fuck you"), 1.0)
-        assertEquals(lcsSimilarity("fuck you", "fuck you and me"), 0.7666666666666666)
-        assertEquals(lcsSimilarity("fuck you", "fuck me"), 0.6696428571428572)
+        assertEquals(newLcsWithStrings("fuck", "kcuf").similarity, 0.0)//0
+        assertEquals(newLcsWithStrings("fuck", "fuck").similarity, 1.0)
+        assertEquals(newLcsWithStrings("fuck you", "fuck you").similarity, 1.0)
+        assertEquals(newLcsWithStrings("fuck you", "fuck you and me").similarity, 0.40953283969570475)
+        assertEquals(newLcsWithStrings("fuck you", "fuck me").similarity, 0.48373501976820044)//0.4837
+        assertEquals(newLcsWithStrings("fuck me and you", "fuck you and me").similarity, 0.5114752634696093)//0.511
+        assertEquals(newLcsWithStrings("_fuckyou", "fuckyou_").similarity, 0.8188118522668012)//0.88
+        assertEquals(newLcsWithStrings("_qwertyuiopasdfghjklzxcvbnm", "qwertyuiopasdfghjklzxcvbnm_").similarity, 0.9519361617179073)
     }
 
+
+    @Test
+    fun testLcsAndLd() {
+        compare("fuck", "kcuf")
+        compare("fuck", "fuck")
+        compare("fuck you", "fuck you")
+        compare("fuck you", "fuck you and me")
+        compare("fuck you", "fuck me")
+        compare("fuck me and you", "fuck you and me")
+        compare("_fuckyou", "fuckyou_")
+        compare("_qwertyuiopasdfghjklzxcvbnm", "qwertyuiopasdfghjklzxcvbnm_")
+        compare("fuck_me_fuck_dog", "fuck_you_fuck_god")
+        compare("水來自海上上海自來水", "上海自來水水來自海上")
+    }
+
+
+    fun compare(a:String, b:String){
+        val s1 = newLcsWithStrings(a,b).similarity
+        val s2 = newLdWithStrings(a,b).similarity
+        println("'$a'\t'$b'\tlsc:${s1.round(3)}\tld:${s2.round(3)}")
+    }
 
 }
 
